@@ -217,7 +217,7 @@ const ALL_QUESTIONS = [
     id: 29, level: 3,
     text: "Who was the first Chief Minister of West Bengal after independence?",
     options: ["Prafulla Chandra Ghosh", "Bidhan Chandra Roy", "Jyoti Basu", "Siddhartha Shankar Ray"],
-    correct: 1,
+    correct: 0,
     category: "Chief Ministers"
   },
   {

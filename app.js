@@ -546,9 +546,12 @@ function escapeHtml(str) {
 // ─── Restart ──────────────────────────────────────────────────────────────────
 function restartGame() {
   clearTimer();
+  const previousName = state.playerName;
   localStorage.removeItem(PROGRESS_KEY);
   state = initialState();
-  document.getElementById('player-name').value = state.playerName;
+  // Pre-fill the name field so the player doesn't have to retype it
+  const nameInput = document.getElementById('player-name');
+  if (nameInput) nameInput.value = previousName;
   showScreen('welcome-screen');
 }
 
