@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Quiz Politics — India Quiz Challenge covering Indian history, politics and governance. 10 levels, 100 questions." />
+  <title>Quiz Politics — India Quiz Challenge</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Favicon (inline SVG as data URI) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇮🇳</text></svg>" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       WELCOME SCREEN
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="welcome-screen" class="screen active">
+
+    <div class="logo-area">
+      <div class="logo-flag">🇮🇳</div>
+      <h1 class="logo-title">Quiz Politics</h1>
+      <p class="logo-subtitle">India Quiz Challenge</p>
+    </div>
+
+    <div class="card welcome-card">
+      <h2 style="text-align:center; margin-bottom: 16px;">Enter Your Name</h2>
+      <div class="input-group">
+        <input
+          type="text"
+          id="player-name"
+          placeholder="Your name..."
+          maxlength="30"
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Player name"
+        />
+        <button id="btn-start" class="btn btn-primary">Play ▶</button>
+      </div>
+
+      <div class="welcome-info" style="margin-top: 20px;">
+        <span class="info-chip">10 Levels</span>
+        <span class="info-chip">100 Questions</span>
+        <span class="info-chip">15s Timer</span>
+        <span class="info-chip">3 Lifelines / Level</span>
+      </div>
+    </div>
+
+    <button id="btn-leaderboard-welcome" class="btn btn-secondary">🏆 Leaderboard</button>
+
+    <p style="font-size: 0.8rem; color: var(--clr-text-muted); text-align:center; max-width: 400px;">
+      Topics: Freedom Movement · Prime Ministers · Chief Ministers ·
+      Constitutional Amendments · Post-Independence India
+    </p>
+
+  </div><!-- /welcome-screen -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       LEVEL SELECT SCREEN
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="level-screen" class="screen">
+
+    <div class="level-header">
+      <h2>Select a Level</h2>
+      <p>Complete a level to unlock the next one</p>
+    </div>
+
+    <div id="level-grid" class="level-grid" role="list" aria-label="Level selection"></div>
+
+    <button id="btn-back-welcome" class="btn btn-ghost">← Back</button>
+
+  </div><!-- /level-screen -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       QUIZ SCREEN
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="quiz-screen" class="screen">
+
+    <!-- Header: level, question number, score, difficulty -->
+    <div class="quiz-header">
+      <div class="quiz-header-item">
+        <span class="label">Level</span>
+        <span class="value" id="current-level">1</span>
+      </div>
+      <div class="quiz-header-item">
+        <span class="label">Question</span>
+        <span class="value" id="question-num">1 / 10</span>
+      </div>
+      <div class="quiz-header-item">
+        <span class="label">Score</span>
+        <span class="value" id="current-score">0</span>
+      </div>
+      <div class="quiz-header-item">
+        <span class="label">Difficulty</span>
+        <span class="value difficulty-badge easy" id="level-difficulty">Easy</span>
+      </div>
+    </div>
+
+    <!-- Question progress bar -->
+    <div class="progress-wrap" role="progressbar" aria-label="Question progress" aria-valuemin="0" aria-valuemax="100">
+      <div id="progress-fill" style="width:0%"></div>
+    </div>
+
+    <!-- Timer -->
+    <div class="timer-section">
+      <div class="timer-wrap" role="timer" aria-label="Time remaining">
+        <div id="timer-fill" style="width:100%"></div>
+      </div>
+      <span class="timer-display" id="timer-display">15</span>
+    </div>
+
+    <!-- Category badge -->
+    <span id="category-badge">Freedom Movement</span>
+
+    <!-- Question card -->
+    <div class="question-card">
+      <p id="question-text">Question text loads here…</p>
+    </div>
+
+    <!-- Options -->
+    <div id="options-grid" class="options-grid" role="group" aria-label="Answer options">
+      <!-- Buttons rendered by JavaScript -->
+    </div>
+
+    <!-- Double Choice hint -->
+    <div id="double-hint"></div>
+
+    <!-- Lifelines -->
+    <div class="lifelines" role="group" aria-label="Lifelines">
+      <button id="lifeline-fifty" class="lifeline-btn" aria-label="50-50 lifeline: remove two wrong options">
+        <span class="ll-icon">🎲</span>
+        <span class="ll-label">50 : 50</span>
+      </button>
+      <button id="lifeline-double" class="lifeline-btn" aria-label="Double Choice lifeline: pick two options">
+        <span class="ll-icon">🔁</span>
+        <span class="ll-label">Double</span>
+      </button>
+      <button id="lifeline-swap" class="lifeline-btn" aria-label="Swap Question lifeline: replace the question">
+        <span class="ll-icon">🔄</span>
+        <span class="ll-label">Swap</span>
+      </button>
+    </div>
+
+    <!-- Quit button -->
+    <div class="quiz-actions">
+      <button id="btn-quit-game" class="btn btn-ghost" style="font-size:0.85rem; padding: 8px 16px;">
+        ✕ Quit Level
+      </button>
+    </div>
+
+  </div><!-- /quiz-screen -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       RESULT SCREEN (after each level)
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="result-screen" class="screen">
+
+    <div id="result-badge" class="result-badge passed">🎉 Level Passed!</div>
+
+    <h2 style="text-align:center;">
+      Level <span id="result-level">1</span> Complete
+    </h2>
+
+    <div class="result-stats">
+      <div class="stat-box">
+        <div class="stat-val" id="result-score">0</div>
+        <div class="stat-label">Correct / <span id="result-total">10</span></div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="result-points">0</div>
+        <div class="stat-label">Points Earned</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="result-cumulative">0</div>
+        <div class="stat-label">Total Score</div>
+      </div>
+    </div>
+
+    <p class="pass-note">Need at least 6 / 10 correct to pass a level.</p>
+
+    <div class="result-actions">
+      <button id="btn-retry-level" class="btn btn-secondary">↩ Retry Level</button>
+      <button id="btn-next-level"  class="btn btn-primary"   style="display:none;">Next Level ▶</button>
+      <button id="btn-level-select-result" class="btn btn-ghost">Level Select</button>
+    </div>
+
+  </div><!-- /result-screen -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       FINAL SCORE SCREEN
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="final-screen" class="screen">
+
+    <div class="final-trophy">🏆</div>
+
+    <h1 style="text-align:center; color: var(--clr-primary);">
+      Congratulations, <span id="final-name">Player</span>!
+    </h1>
+
+    <div>
+      <div class="final-score-display" id="final-score">0</div>
+      <div class="final-out-of">out of <span id="final-max">1000</span> points</div>
+    </div>
+
+    <p style="text-align:center; color: var(--clr-text-muted);">
+      You are ranked <strong style="color: var(--clr-primary);">#<span id="final-rank">1</span></strong>
+      on the leaderboard!
+    </p>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">
+      <button id="btn-play-again"       class="btn btn-primary">🔄 Play Again</button>
+      <button id="btn-leaderboard-final" class="btn btn-secondary">🏆 Leaderboard</button>
+    </div>
+
+  </div><!-- /final-screen -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       LEADERBOARD SCREEN
+  ═══════════════════════════════════════════════════════════ -->
+  <div id="leaderboard-screen" class="screen">
+
+    <div class="leaderboard-header">
+      <h2>🏆 Leaderboard</h2>
+      <p>Top 10 players</p>
+    </div>
+
+    <div class="leaderboard-table-wrap card" style="padding: 0; overflow: hidden;">
+      <table aria-label="Leaderboard scores">
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Player</th>
+            <th>Score</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboard-tbody">
+          <!-- Rows rendered by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="leaderboard-actions">
+      <button id="btn-back-leaderboard" class="btn btn-secondary">← Back</button>
+      <button id="btn-clear-leaderboard" class="btn btn-danger" style="font-size:0.85rem; padding:10px 18px;">
+        🗑 Clear
+      </button>
+    </div>
+
+  </div><!-- /leaderboard-screen -->
+
+</div><!-- /app -->
+
+<!-- Feedback overlay (full-screen flash) -->
+<div id="feedback-overlay" class="feedback-overlay" aria-live="polite" aria-atomic="true"></div>
+
+<!-- Toast notification -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- Scripts: questions first, then app logic -->
+<script src="questions.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
